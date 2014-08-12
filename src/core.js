@@ -23,7 +23,8 @@ function IScroll (el, options) {
 
 		HWCompositing: true,
 		useTransition: true,
-		useTransform: true
+		useTransform: true,
+		invertScrollBarVerticalDirection: false
 	};
 
 	for ( var i in options ) {
@@ -50,10 +51,12 @@ function IScroll (el, options) {
 	this.options.bounceEasing = typeof this.options.bounceEasing == 'string' ? utils.ease[this.options.bounceEasing] || utils.ease.circular : this.options.bounceEasing;
 
 	this.options.resizePolling = this.options.resizePolling === undefined ? 60 : this.options.resizePolling;
-
+	
 	if ( this.options.tap === true ) {
 		this.options.tap = 'tap';
 	}
+	
+	if (this.options.invertScrollBarVerticalDirection) this.options.invertScrollBarVerticalDirection = true;
 
 // INSERT POINT: NORMALIZATION
 
@@ -163,7 +166,7 @@ IScroll.prototype = {
 
 		var point		= e.touches ? e.touches[0] : e,
 			deltaX		= point.pageX - this.pointX,
-			deltaY		= point.pageY - this.pointY,
+			deltaY		= (this.options.invertScrollBarVerticalDirection) ? this.pointY - point.pageY : point.pageY - this.pointY,
 			timestamp	= utils.getTime(),
 			newX, newY,
 			absDistX, absDistY;
